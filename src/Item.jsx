@@ -1,6 +1,6 @@
 import dateFormat from 'dateformat';
 
-function Item({ item }) {
+function Item({ item, completeId }) {
   function isOverdue(item) {
     return !item.complete && item.timestampDue < new Date().getTime();
   }
@@ -10,10 +10,23 @@ function Item({ item }) {
 
   return (
     <li className={itemClass}>
-      {`${item.name} - ${dateFormat(
-        new Date(item.timestampDue),
-        'dd-mmm-yyyy'
-      )}`}
+      <div className="item">
+        <span className={`item-title${item.complete ? ' complete-item' : ''}`}>
+          {`${item.name} - ${dateFormat(
+            new Date(item.timestampDue),
+            'dd-mmm-yyyy'
+          )}`}
+        </span>
+        {!item.complete && (
+          <button
+            type="button"
+            className="btn btn-link"
+            onClick={() => completeId(item.id)}
+          >
+            Complete
+          </button>
+        )}
+      </div>
     </li>
   );
 }
