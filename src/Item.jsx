@@ -1,9 +1,7 @@
 import dateFormat from 'dateformat';
+import isOverdue from './isOverdue';
 
-function Item({ item, completeId }) {
-  function isOverdue(item) {
-    return !item.complete && item.timestampDue < new Date().getTime();
-  }
+function Item({ item, completeItem }) {
   const itemClass = `list-group-item list-group-item-${
     isOverdue(item) ? 'danger' : 'info'
   }`;
@@ -18,11 +16,7 @@ function Item({ item, completeId }) {
           )}`}
         </span>
         {!item.complete && (
-          <button
-            type="button"
-            className="btn btn-link"
-            onClick={() => completeId(item.id)}
-          >
+          <button type="button" className="btn btn-link" onClick={completeItem}>
             Complete
           </button>
         )}
