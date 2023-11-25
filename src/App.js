@@ -1,21 +1,32 @@
 import Header from './Header';
 import List from './List';
-import { useState } from 'react';
-import todo from './mockData.json';
+import { useState, useEffect } from 'react';
+import todoApi from './todoApi';
 import isOverdue from './isOverdue';
 
 function App() {
-  const [items, setItems] = useState(todo.Items);
+  const [items, setItems] = useState([]);
   const [filter, setFilter] = useState({
     overdueOnly: false,
     includeComplete: false
   });
-  function completeItem(id) {
-    const updatedItems = items.map((item) => {
-      return item.id === id ? { ...item, complete: true } : item;
-    });
+  const [loading, setLoading] = useState(false);
+
+  async function loadItems() {
+    setLoading(true);
+    const todoItems = await todoApi.get();
+    setItems(todoItems);
+    setLoading(false);
+  }
+  useEffect(() => {
+    loadItems();
+  }, []);
+
+  async function completeItem(id) {
+    const updatedItems = await todoApi.completeItem(id);
     setItems(updatedItems);
   }
+
   const filteredItems = items.filter(
     (item) =>
       (filter.includeComplete || !item.complete) &&
@@ -24,7 +35,16 @@ function App() {
   return (
     <div className="fluid-container app-container">
       <Header filter={filter} setFilter={setFilter} />
-      <List items={filteredItems} completeItem={completeItem} />
+      {!loading && (
+        <div className="list">
+          <List items={filteredItems} completeItem={completeItem} />
+        </div>
+      )}
+      {loading && (
+        <div className="alert alert-info" role="alert">
+          Loading please wait...
+        </div>
+      )}
     </div>
   );
 }
