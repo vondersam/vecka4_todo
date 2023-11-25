@@ -16,7 +16,11 @@ function Item({ item, completeItem }) {
           )}`}
         </span>
         {!item.complete && (
-          <button type="button" className="btn btn-link" onClick={completeItem}>
+          <button
+            type="button"
+            className="btn btn-link"
+            onClick={() => completeItem(item.id)}
+          >
             Complete
           </button>
         )}

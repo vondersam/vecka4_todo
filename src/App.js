@@ -22,8 +22,13 @@ function App() {
     loadItems();
   }, []);
 
-  async function completeItem(id) {
-    const updatedItems = await todoApi.completeItem(id);
+  async function complete(id) {
+    const updatedItems = await todoApi.complete(id);
+    setItems(updatedItems);
+  }
+
+  async function add(item) {
+    const updatedItems = await todoApi.add(item);
     setItems(updatedItems);
   }
 
@@ -34,10 +39,10 @@ function App() {
   );
   return (
     <div className="fluid-container app-container">
-      <Header filter={filter} setFilter={setFilter} />
+      <Header filter={filter} setFilter={setFilter} addItem={add} />
       {!loading && (
         <div className="list">
-          <List items={filteredItems} completeItem={completeItem} />
+          <List items={filteredItems} completeItem={complete} />
         </div>
       )}
       {loading && (
